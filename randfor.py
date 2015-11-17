@@ -10,7 +10,7 @@ from sklearn.metrics import classification_report
 
 def main():
     p = optparse.OptionParser()
-    p.add_option('--model', '-m', default = 'model.pickle', type = str, help = 'model filename')
+    p.add_option('--model', '-m', default = 'model', type = str, help = 'model filename prefix')
     p.add_option('--load', '-L', default = False, action = 'store_true', help = 'load model from file')
     p.add_option('--features', '-f', default = 'features.txt', type = str, help = 'feature filename')
     p.add_option('--data', '-d', default = 'data.csv', type = str, help = 'marked data filename')
@@ -20,6 +20,8 @@ def main():
     p.add_option('--test_fraction', '-t', default = 0.25, type = float, help = 'fraction of data to use for testing')
     p.add_option('--seed', '-s', default = None, type = int, help = 'random seed')
     opts, args = p.parse_args()
+
+    model_filename = opts.model + '%s.pickle' % ('' if opts.seed is None else str(opts.seed))
 
     np.random.seed(opts.seed)
 
@@ -43,7 +45,7 @@ def main():
     train, test = df[is_train], df[~is_train]
 
     if opts.load:
-        rfc = pickle.load(open(opts.model, 'rb'))
+        rfc = pickle.load(open(model_filename, 'rb'))
     else:
         # set the random forest instance
         rfc = RandomForestClassifier(n_estimators = opts.n_estimators, n_jobs = -1)
@@ -77,9 +79,9 @@ def main():
             print("\nTraining %d random forests..." % opts.n_estimators)
         rfc.fit(X, y)
         # save off the model
-        pickle.dump(rfc, open(opts.model, 'wb'))
+        pickle.dump(rfc, open(model_filename, 'wb'))
         if opts.verbose:
-            print("\nSaved model to '%s'.\n" % opts.model)
+            print("\nSaved model to '%s'.\n" % model_filename)
 
     # make predictions on the test data
     probs = rfc.predict_proba(test[rfc.input_features])[:, 1]
