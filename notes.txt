@@ -1,0 +1,24 @@
+Click Graph
+------------
+Session Attributes:
+1) Number of clicks (same as degree)
+2) Duration of session (0 if only one click occurred, otherwise time between first and last click)
+3) Day of the week (Mon. - Sun.)
+4) Day of the year (0 - 365)
+5) Time of day (continuous or category)
+6) Month
+7) Is it currently a holiday (off work?)
+
+
+min click length
+max click length
+average click length
+stdev / mean click lengths
+did they click special offer?
+max # of repeated clicks on same object
+# of items clicked more than once
+
+
+# fix durations???
+# make nice plots with buy/click ratios
+# engineer features & do random forests
