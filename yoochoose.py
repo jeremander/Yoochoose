@@ -9,6 +9,7 @@ from collections import defaultdict
 
 clicks_filename = 'data/yoochoose-clicks.dat'
 buys_filename = 'data/yoochoose-buys.dat'
+ZERO_THRESH = 1e-12
 
 # total clicks:          33003944
 # unique click sessions:  9249729
@@ -146,8 +147,6 @@ class Yoochoose(object):
             num_buys_dict[sessionID] += 1
             num_buys_dict[itemID] += 1
         for (i, sessionID) in enumerate(self.clicks.sessionIDs):
-            if (i % 100000 == 0):
-                print("i = %d" % i)
             num_clicks = num_clicks_dict[sessionID]
             num_buys = num_buys_dict[sessionID]
             timestamps = timestamp_dict[sessionID]
@@ -157,7 +156,7 @@ class Yoochoose(object):
             min_interval = 0.0 if (len(intervals) == 0) else min(intervals)
             max_interval = 0.0 if (len(intervals) == 0) else max(intervals)
             mean_interval = 0.0 if (len(intervals) == 0) else np.mean(intervals)
-            cv_interval = 0.0 if (len(intervals) == 0) else np.std(intervals) / mean_interval  # coefficient of variation
+            cv_interval = 0.0 if (duration < ZERO_THRESH) else np.std(intervals) / mean_interval  # coefficient of variation
             mid_time = timestamps[0] + (timestamps[-1] - timestamps[0]) / 2
             items_clicked = items_clicked_dict[sessionID]
             counts = [items_clicked.count(item) for item in set(items_clicked)]
