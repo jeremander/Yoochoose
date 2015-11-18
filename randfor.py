@@ -19,6 +19,7 @@ def main():
     p.add_option('--n_estimators', '-n', default = 100, type = int, help = 'number of random forest estimators')
     p.add_option('--test_fraction', '-t', default = 0.25, type = float, help = 'fraction of data to use for testing')
     p.add_option('--seed', '-s', default = None, type = int, help = 'random seed')
+    p.add_option('--jobs', '-j', default = -1, type = int, help = 'number of jobs (-1 if maximum)')
     opts, args = p.parse_args()
 
     model_filename = opts.model + '%s.pickle' % ('' if opts.seed is None else str(opts.seed))
@@ -48,7 +49,7 @@ def main():
         rfc = pickle.load(open(model_filename, 'rb'))
     else:
         # set the random forest instance
-        rfc = RandomForestClassifier(n_estimators = opts.n_estimators, n_jobs = -1)
+        rfc = RandomForestClassifier(n_estimators = opts.n_estimators, n_jobs = opts.jobs)
         # set list of features (all the uncommented features above dotted line in feature file; leading/trailing whitespace is stripped
         with open(opts.features, 'r') as f:
             lines = f.readlines()

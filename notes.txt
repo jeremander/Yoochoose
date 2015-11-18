@@ -22,3 +22,11 @@ max # of repeated clicks on same object
 # fix durations???
 # make nice plots with buy/click ratios
 # engineer features & do random forests
+
+
+
+
+qsub example from Greg:
+qsub -q intel.q -l num_proc=1,mem_free=40G,h_rt=72:00:00 -b Y -N yc_embed -cwd \
+-j yes -o ~/qlogs/ -V "matlab -nojvm -nodisplay -singleCompThread -r \"embed_gr\
+aph;\""
