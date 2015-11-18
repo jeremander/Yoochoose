@@ -47,6 +47,9 @@ def main():
 
     if opts.load:
         rfc = pickle.load(open(model_filename, 'rb'))
+        if opts.verbose:
+            print("\nLoaded model from '%s'.\n" % model_filename)
+
     else:
         # set the random forest instance
         rfc = RandomForestClassifier(n_estimators = opts.n_estimators, n_jobs = opts.jobs)

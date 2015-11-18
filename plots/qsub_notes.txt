@@ -1,0 +1,32 @@
+qsub
+
+-q
+all.q           (All but GPUs)
+intel.q         (Intel processors)
+gpu.q           (GPUs)
+
+-l  (resources) (separate arguments by commas)
+num_proc=32     (Number of processors)
+mem_free=16G    (Amount of memory)
+h_rt=hh:mm:ss   (Time) 
+
+-b Y            (Executing a binary)
+-V              (Load all environment variables)
+-cwd            (Do it in the current working directory)
+-j yes          (Join stdout and stderr into one log file)
+-o .            (Put output in current working directory)
+-N name_of_job  (The name of the job)
+
+
+
+qsub -q all.q -l num_proc=32,mem_free=32G,h_rt=72:00:00 -b Y -V -cwd -j yes -o . -N randfor "time python3 randfor.py -d data/yoochoose-session_features.csv -v -T .125 -n 100 -s 555 -j 32"
+
+
+qstat           (Monitors the job)
+
+qstat -f        (Shows list of machines)
+
+qstat -j 699365 | grep "usage"  
+
+qdel 699365     (Kill the job)
+qdel -u jsilver (Kill all my jobs)

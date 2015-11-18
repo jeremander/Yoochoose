@@ -1,0 +1,40 @@
+time python3 randfor.py -d data/yoochoose-session_features.csv -v -T .125 -n 100 -s 555 -L
+
+Reading marked data from data/yoochoose-session_features.csv...
+Read 9249729 lines of data -> 6937297 lines (training), 2312432 lines (test)
+
+Confusion Matrix
+predicted    False   True 
+actual                    
+False      1891139  293978
+True         68077   59238
+
+Classification Report
+             precision    recall  f1-score   support
+
+      False       0.97      0.87      0.91   2185117
+       True       0.17      0.47      0.25    127315
+
+avg / total       0.92      0.84      0.88   2312432
+
+Accuracy = 84.343%
+
+Feature Importances
+         duration    15.739%
+      minInterval    14.928%
+      maxInterval    14.787%
+     meanInterval    14.590%
+       cvInterval    10.117%
+        dayOfYear     7.681%
+        hourOfDay     7.438%
+        dayOfWeek     3.165%
+        numClicks     3.060%
+ ratioRepeatItems     2.626%
+      monthOfYear     1.798%
+   numRepeatItems     1.784%
+  maxRepeatClicks     1.775%
+   clickedSpecial     0.511%
+
+real 7m30.412s
+user  7m36.702s
+sys 8m21.134s
