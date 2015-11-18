@@ -110,7 +110,8 @@ def main():
     plt.xlim([-1, X.shape[1]])
     fig = plt.gcf()
     fig.subplots_adjust(bottom = 0.25)
-    plt.show()
+    plt.savefig('feature_importances%s.png' % ('' if opts.seed is None else str(opts.seed)))
+    #plt.show()
 
 
 if __name__ == "__main__":
