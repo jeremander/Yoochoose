@@ -19,11 +19,6 @@ max # of repeated clicks on same object
 # of items clicked more than once
 
 
-# fix durations???
-# make nice plots with buy/click ratios
-# engineer features & do random forests
-
-
 
 
 qsub example from Greg:
