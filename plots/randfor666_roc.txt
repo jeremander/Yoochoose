@@ -1,0 +1,26 @@
+python3 roc.py -l data/yoochoose-test_labels -p data/yoochoose-test_probs666
+
+Area under ROC curve = 0.749
+
+True counts:
+False  101277   0.055
+True  1748669   0.945
+
+Best threshold = 0.172
+
+tpr = 0.348
+fpr = 0.081
+precision = 0.199
+f-score = 0.253
+
+predicted    False   True 
+actual                    
+False      1606554  142115
+True         66038   35239
+
+             precision    recall  f1-score   support
+
+      False       0.96      0.92      0.94   1748669
+       True       0.20      0.35      0.25    101277
+
+avg / total       0.92      0.89      0.90   1849946
