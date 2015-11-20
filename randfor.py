@@ -20,9 +20,11 @@ def main():
     p.add_option('--test_fraction', '-t', default = 0.25, type = float, help = 'fraction of data to use for testing')
     p.add_option('--seed', '-s', default = None, type = int, help = 'random seed')
     p.add_option('--jobs', '-j', default = -1, type = int, help = 'number of jobs (-1 if maximum)')
+    p.add_option('--probs', '-p', default = None, type = str, help = 'filename for output probabilities')
     opts, args = p.parse_args()
 
     model_filename = opts.model + '%s.pickle' % ('' if opts.seed is None else str(opts.seed))
+    probs_filename = ('predicted_probs%s.dat' % ('' if opts.seed is None else str(opts.seed))) if opts.probs is None else opts.probs
 
     np.random.seed(opts.seed)
 
@@ -89,6 +91,8 @@ def main():
 
     # make predictions on the test data
     probs = rfc.predict_proba(test[rfc.input_features])[:, 1]
+    probs_series = pd.Series(probs)
+    probs_series.to_csv(probs_filename, index = False)
     test_preds = (probs >= opts.thresh)
     conf_df = pd.crosstab(test[rfc.output_feature], test_preds, rownames = ['actual'], colnames = ['predicted'])
     conf_mat = np.asarray(conf_df)

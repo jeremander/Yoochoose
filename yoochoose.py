@@ -9,6 +9,8 @@ from collections import defaultdict
 
 clicks_filename = 'data/yoochoose-clicks.dat'
 buys_filename = 'data/yoochoose-buys.dat'
+heldout_filename = 'data/yoochoose-heldout.dat'
+solution_filename = 'data/yoochoose-solution.dat'
 ZERO_THRESH = 1e-12
 
 # total clicks:          33003944
@@ -18,6 +20,27 @@ ZERO_THRESH = 1e-12
 # unique clicked itemIDs:  52739
 # unique bought itemIDs:   19949
 # purchases with price & quantity == 0:  610030
+
+def dict_to_csv(filename, d):
+    """Writes dictionary to a CSV file in the following format: key;item1,item2,... for each line."""
+    with open(filename, 'w') as f:
+        for key in sorted(d.keys()):
+            line = str(key) + ';'
+            for val in sorted(d[key]):
+                line += str(val) + ','
+            f.write(line.strip(',') + '\n')
+
+def csv_to_dict(filename, key_type = str, val_type = str):
+    """Reads dictionary from a CSV file in the following format: key;item1,item2,... for each line. key_type and val_type refer to the type of keys and values (e.g. str, int, float)."""
+    d = defaultdict(list)
+    with open(filename, 'r') as f:
+        for line in f:
+            key_part, values_part = line.split(';')
+            key = key_type(key_part)
+            for val in values_part.split(','):
+                d[key].append(val_type(val))
+    return d
+
 
 class PosNegBloomFilter(BloomFilter):
     """Bloom Filter for either set inclusion or exclusion."""
@@ -49,6 +72,14 @@ class YoochooseBuys(YoochooseClicksOrBuys):
     @classmethod
     def from_csv(cls, filename = buys_filename):
         return cls(pd.read_csv(filename, header = None, names = ['sessionID', 'timestamp', 'itemID', 'price', 'quantity'], parse_dates = [1]))
+    @classmethod
+    def from_solution(cls, filename = solution_filename):
+        buys_by_session = csv_to_dict(filename, key_type = int, val_type = int)
+        rows_list = []
+        for sessionID in sorted(buys_by_session.keys()):
+            for itemID in sorted(buys_by_session[sessionID]):
+                rows_list.append([sessionID, itemID])
+        return cls(pd.DataFrame(rows_list, columns = ['sessionID', 'itemID']))
 
 class Yoochoose(object):
     """Class encapsulating the click events and buy events from the Yoochoose data set."""
@@ -142,8 +173,9 @@ class Yoochoose(object):
             clicked_special_dict[sessionID] |= (category == 'S')
             num_clicks_dict[sessionID] += 1
             num_clicks_dict[itemID] += 1
+        session_index, item_index = list(self.buys.columns).index('sessionID') + 1, list(self.buys.columns).index('itemID') + 1
         for row in self.buys.itertuples():
-            sessionID, itemID = row[1], row[3]
+            sessionID, itemID = row[session_index], row[item_index]
             num_buys_dict[sessionID] += 1
             num_buys_dict[itemID] += 1
         for (i, sessionID) in enumerate(self.clicks.sessionIDs):
@@ -191,6 +223,23 @@ class Yoochoose(object):
         if prefix:
             self.session_features.to_csv(prefix + '-session_features.csv', index = False)
             self.item_features.to_csv(prefix + '-item_features.csv', index = False)
+    def build_click_cliques(self, prefix = None, load = True):
+        """Makes dictionary of cliques (sessions that all clicked on the same item) by mapping item IDs to lists of session IDs. Saves the result as a CSV file (itemID;session1,session2... for each line) if filename prefix is specified."""
+        success = False
+        if load:
+            try:
+                print("Loading cliques...")
+                self.click_cliques = csv_to_dict(prefix + 'click_cliques.csv', key_type = int, val_type = int)
+                success = True
+            except:
+                print("Failed to load cliques from file.")
+        if (not success):
+            self.click_cliques = defaultdict(list)
+            for row in self.clicks.itertuples():
+                sessionID, itemID = row[1], row[3]
+                self.click_cliques[itemID].append(sessionID)
+            if prefix:
+                dict_to_csv(prefix + '-click_cliques.csv', self.click_cliques)
     def build_graphs(self):
         """Builds bipartite graphs of the data using networkx, one for clicks and one for buys. An edge exists between a session and an item if a click or buy occurred for that session/item pair. 
         Vertex attributes for the click graph are the same as in 'make_session_features'.
@@ -230,3 +279,7 @@ class Yoochoose(object):
     def from_training(cls, prefix = 'data/yoochoose'):
         """Loads clicks and buys from training data files."""
         return cls(YoochooseClicks.from_csv(prefix + '-clicks.dat'), YoochooseBuys.from_csv(prefix + '-buys.dat'))
+    @classmethod
+    def from_solution(cls, test_filename = heldout_filename, solution_filename = solution_filename):
+        """Loads clicks and buys from heldout test set."""
+        return cls(YoochooseClicks.from_csv(heldout_filename), YoochooseBuys.from_solution(solution_filename))

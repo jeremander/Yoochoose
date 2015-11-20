@@ -1,5 +1,3 @@
-# Given a labeled data set (arbitrary features, binary response) and a filename with list of features to evaluate, constructs random forest model and compares the features
-
 # Trains and tests random forest on the full Yoochoose data set. Saves off the model, test set probabilities, and report of classification statistics
 
 import optparse

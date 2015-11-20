@@ -43,8 +43,11 @@ week_of_year_plot2 = ggplot(aes(x = 'dayOfYear', y = 'buyRatio'), data = points)
 day_of_year_plot = ggplot(aes(x = 'dayOfYear', fill = 'bought'), data = session_features) + geom_histogram(binwidth = 1) + ggtitle("Days of the year") + scale_x_continuous(breaks = days_of_year_by_month, labels = months) + xlab("") + xlim(low = 80, high = 280)
 day_of_year_plot2 = ggplot(aes(x = 'dayOfYear', y = 'buyRatio'), data = session_features) + geom_line(stat = "summary", fun_y = np.mean) + scale_x_continuous(breaks = days_of_year_by_month, labels = months) + xlab("") + ylab("mean buys/clicks") + xlim(low = 80, high = 280) + ggtitle("Days of the year")
 
-time_of_day_plot = ggplot(aes(x = 'hourOfDay', fill = 'bought'), data = session_features) + geom_histogram(binwidth = 1.) + ggtitle("Time of day") + xlab("Hour")
+time_of_day_plot = ggplot(aes(x = 'hourOfDay', fill = 'bought'), data = session_features) + geom_histogram(binwidth = 1) + ggtitle("Time of day") + xlab("Hour")
 time_of_day_plot2 = ggplot(aes(x = 'hourOfDay', y = 'buyRatio', width = 0.8), data = session_features) + geom_bar(stat = "summary", fun_y = np.mean) + scale_x_discrete(breaks = range(24), labels = range(24)) + xlim(-1, 24) + xlab("Hour") + ggtitle("Time of day") + ylab("mean buys/clicks")
+
+num_clicks_plot = ggplot(aes(x = 'numClicks', fill = 'bought'), data = session_features) + geom_histogram(binwidth = 1) + xlab("number of clicks") + scale_y_log10()
+num_clicks_plot2 = ggplot(aes(x = 'numClicks', y = 'buyRatio', width = 0.8), data = session_features) + geom_line(stat = "summary", fun_y = np.mean) + xlab("number of clicks") + ylab("mean buys/clicks")
 
 ggsave('plots/session_click_hist', session_click_plot)
 ggsave('plots/session_buy_hist', session_buy_plot)
@@ -64,3 +67,5 @@ ggsave('plots/day_hist', day_of_year_plot)
 ggsave('plots/session_buy_ratio_vs_day', day_of_year_plot2)
 ggsave('plots/time_hist', time_of_day_plot)
 ggsave('plots/session_buy_ratio_vs_time', time_of_day_plot2)
+ggsave('plots/num_clicks_hist', num_clicks_plot)
+ggsave('plots/session_buy_ratio_vs_num_clicks', num_clicks_plot2)
