@@ -27,8 +27,8 @@ def main():
     if opts.verbose:
         print("\nReading data set...")
 
-    train = pd.read_csv('data/yoochoose-training_session_features.csv').append(pd.read_csv('data/yoochoose-dev_session_features.csv'))
-    test = pd.read_csv('data/yoochoose-test_session_features.csv')
+    train = pd.read_csv('yoochoose/data/training_session_features.csv').append(pd.read_csv('yoochoose/data/dev_session_features.csv'))
+    test = pd.read_csv('yoochoose/data/test_session_features.csv')
 
     if opts.load:
         rfc = pickle.load(open(model_filename, 'rb'))

@@ -25,5 +25,11 @@ qstat -j 699365 | grep "usage"      (Monitors job memory usage)
 qdel 699365     (Kill the job)
 qdel -u jsilver (Kill all my jobs)
 
+
 Example:
 qsub -q all.q -l num_proc=32,mem_free=32G,h_rt=72:00:00 -b Y -V -cwd -j yes -o . -N randfor "time python3 randfor.py -d data/yoochoose-session_features.csv -v -T .125 -n 100 -s 555 -j 32"
+
+Example from Greg:
+qsub -q intel.q -l num_proc=1,mem_free=40G,h_rt=72:00:00 -b Y -N yc_embed -cwd \
+-j yes -o ~/qlogs/ -V "matlab -nojvm -nodisplay -singleCompThread -r \"embed_gr\
+aph;\""

@@ -21,7 +21,13 @@ max # of repeated clicks on same object
 
 
 
-qsub example from Greg:
-qsub -q intel.q -l num_proc=1,mem_free=40G,h_rt=72:00:00 -b Y -N yc_embed -cwd \
--j yes -o ~/qlogs/ -V "matlab -nojvm -nodisplay -singleCompThread -r \"embed_gr\
-aph;\""
+population features:
+proportion of buyers in population
+edge counts (0,0), (1,0) or (0,1), (1,1)        (too hard to compute?)
+
+item (clique) features:
+proportion of buyers among sessions who clicked on an item
+edge counts (0,0), (1,0) or (0,1), (1,1) conditioned on item
+
+
+
